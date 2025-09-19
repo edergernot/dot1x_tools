@@ -135,8 +135,9 @@ def dot1x_work(IP,ports):
     ### Check CDP Neighbors and add Switches
     cdps=ssh.send_command("show cdp neighbor detail", use_textfsm=True)
     for cdp in cdps:
-        if 'cisco C9200' in cdp["platform"]: # type: ignore
-            switches.append(cdp['mgmt_address']) # type: ignore
+        for platform in platforms:
+            if platform in cdp["platform"]: # type: ignore
+                switches.append(cdp['mgmt_address']) # type: ignore
     try:
         ports_to_change=ports[hostname]
     except KeyError:

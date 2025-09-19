@@ -3,6 +3,10 @@
 Vendor_to_change = "Dell Inc."
 seeddevice="172.30.103.254"
 
+# Check only these Platforms in CDP discovery
+platforms = ['cisco C9200', 'cisco C9300', 'cisco C9400', 'cisco 9500', 'cisco 9600']
+
+# Modify for your need 
 dot1x_config = ["switchport mode access",
 "switchport port-security maximum 10",
 "switchport port-security violation restrict",

@@ -131,11 +131,13 @@ def generate_excel(interfaces:list):
 
     # Write the dataframe data to XlsxWriter. Turn off the default header and
     # index and skip one row to allow us to insert a user defined header.
-    df.to_excel(writer, sheet_name='Sheet1', startrow=1, header=False, index=False)
+    sheetname= starttime.strftime("%d.%m.%Y")
+    df.to_excel(writer, sheet_name=sheetname, startrow=1, header=False, index=False)
 
     # Get the xlsxwriter workbook and worksheet objects.
     workbook = writer.book
-    worksheet = writer.sheets['Sheet1']
+    
+    worksheet = writer.sheets[sheetname]
 
     # Get the dimensions of the dataframe.
     (max_row, max_col) = df.shape
@@ -189,16 +191,17 @@ def interface_report(IP):
 
     cdps=ssh.send_command("show cdp neighbor detail", use_textfsm=True)
     for cdp in cdps:
-        if 'cisco C9200' in cdp["platform"]: # type: ignore
-            switches.append(cdp['mgmt_address']) # type: ignore
+        for platform in platforms:
+            if platform  in cdp["platform"]: # type: ignore
+                switches.append(cdp['mgmt_address']) # type: ignore
     
     ### Interface Status, to get the Interfaces ###
     interface_status=ssh.send_command("show interface status", use_textfsm=True)
     for interface in interface_status:
         interface_config_dict:dict={}
         interface_config_dict['host']=hostname
-        if  interface['port'][:2]=='Ap' : # type: ignore # Ignore AP Ports
-            continue
+        #if  interface['port'][:2]=='Ap' : # type: ignore # Ignore AP Ports
+        #    continue
         #if interface["name"]=='' and interface['vlan_id'] == '1':
         #    interface["Device"]=hostname
         #    Unconfigured_ports.append(interface)
