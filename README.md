@@ -1,11 +1,21 @@
 # Collection of tools to migrate customer to dot1x with Cisco Catalyst
-+ Customer uses cat2k and cat9400 (Seeddevice) If other devices are used change the . 
++ Basic dot1x settings (aaa, service policies and so on) are allready done. 
 + Seedswitch is used and Network is crawled via cdp (only platforms in init file will be checked)
 + Need "```decription #NoAuth#```_and_whatever_needet" on interface which should not change
+```
+interface GigabitEthernet 1/0/1
+ description #NoAuth# Fileserver FS002
+ switchport mode access
+ ...
+ ```
+
 ## Generate an interface Report
-+ creates Excelfile with usefull informations per interface
+### ```uv run interface_report.py``` 
++ creates Excelfile with usefull informations (speed, duplex, dot1x, vlan, ..) per interface
 * sheetname is date when its created
+
 ## Configure Ports from file where hostname and port is in a file
+### ```uv run dot1x_from_file.py``` 
 + copy column a and b from Excel after filtering the requested Interface
 * It starts wit the seeddevice, checks if the device is in the list of the devices to chnage.
 * It does a sh cdp neighbor for crawling the net. 
@@ -14,7 +24,9 @@
     * it checks the authentication status after 4 seconds 
     * it writes all that in a *.cfg file one per switch
 * Does the same on every other switch and port in list
+
 ## Configure Portsettings when spezial Vendor is seen on an Interface
+### ```uv run vendor_dot1x.py``` 
 + does live mac vendor lookup to API and configures the Interfaces
 * It connects to the seeddevice and does a cdp neighbor for crawling the net.
     * reads the mac table.
@@ -24,7 +36,8 @@
     * configure the Interface
 
 # Setup
-Astrals UV is used for installing the packages
+Astrals UV is used for installing the packages<br>
+see: https://docs.astral.sh/uv/getting-started/installation/
 ```
 git clone https://github.com/edergernot/dot1x_tools
 cd dot1x_tools
@@ -47,7 +60,10 @@ curl https://api.maclookup.app/v2/macs/{Your Mac Address}
 use string returned in the "company" key.
 
 
-## ToDos
-# vendor_dot1x
+# ToDos
+## vendor_dot1x
 * Check mac count on the Interface before configuring 
 * Check every interface 
+## dot1x portconfiguration
+* use as a seperate file 
+* Make Guest-Vlan value configureable in the init.py
