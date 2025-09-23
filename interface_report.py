@@ -91,6 +91,9 @@ def generate_interfaceconfig_dict(interface_config:str)->dict:
         if "access-session port-control auto" in line:
             interface["Dot1x"] = "Enabled"
             continue
+        if "authentication-session port-control auto" in line:
+            interface["Dot1x"] = "Enabled"
+            continue
         if "mab" in line:
             interface["Mab"] = "Enabled"
             continue
@@ -116,8 +119,12 @@ def generate_interfaceconfig_dict(interface_config:str)->dict:
             except KeyError:
                 interface["trunk_vlans"]=line.split("switchport trunk allowed vlan")[1].strip()
                 continue
+        if "switchport trunk native vlan" in line:
+            interface["trunk_native_vlan"]=line.split("switchport trunk native vlan")[1].strip()
+            continue
         if "device-tracking attach-policy" in line:
             interface["device_tracking_policy"]=line.split("device-tracking attach-policy")[1].strip()
+            continue
         if "spanning-tree" in line:
             try:
                 stp_setting=interface["spanning-tree"]
