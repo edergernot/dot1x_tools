@@ -6,6 +6,8 @@ from rich.console import Console
 import pandas as pd
 import json
 from init import *
+import sys
+from multiprocessing.dummy import Pool as ThreadPool
 
 ### Init Vars 
 starttime = datetime.now()
@@ -19,6 +21,19 @@ console=Console()  # used for colored Output
 load_dotenv()
 SSH_User=os.getenv("SSH_USERNAME")
 SSH_Pass=os.getenv("SSH_PASSWORD")
+
+def create_devicelist(file):
+    devices = []
+    with open(file, "r") as f:
+        file = f.read()
+    for line in file.split("\n"):
+        if len(line)==0:
+            continue
+        if "Name,Type,IP-Address" in line:
+            continue
+        ip_addr=line.split(",")[2]
+        devices.append(ip_addr)
+    return(devices)
 
 def mac_normalizer(MAC_ADDR:str):
     mac:str=MAC_ADDR.replace(".", "")
@@ -107,7 +122,7 @@ def generate_interfaceconfig_dict(interface_config:str)->dict:
             try:
                 stp_setting=interface["spanning-tree"]
                 stp_additional_setting=line.split("spanning-tree")[1].strip()
-                interface["spanning-tree"]=stp_setting+"\n"+stp_additional_setting
+                interface["spanning-tree"]=stp_setting+","+stp_additional_setting
                 continue
             except KeyError:
                 interface["spanning-tree"]=line.split("spanning-tree")[1].strip()
@@ -218,22 +233,32 @@ def interface_report(IP):
         interface_config_dict["cdp"]=interface_cdp(ssh,interface)
         All_Interfaces.append(interface_config_dict)
         #print(f"Check {interface_config.split("\n")[1]}")
-    print(f"{len(interface_status)} interfaces checked")
+    print(f"{len(interface_status)} interfaces checked on {hostname}")
     ssh.disconnect()
         
 if __name__ == "__main__":
-    interface_report(seeddevice)
-    for switch in switches:
-        interface_report(switch)
+    if len(sys.argv) == 1: # no device-file was added. Crawl from seedswitch
+        interface_report(seeddevice)
+        for switch in switches:
+            interface_report(switch)
+    else:  # device-file added. do Multitasking!
+        file = sys.argv[1]
+        devices = create_devicelist(file)
+        if len(devices) <= 30 :
+            num_threads=len(devices)
+        else:
+            num_threads=30
+        threads = ThreadPool( num_threads )
+        results = threads.map( interface_report, devices )
+        threads.close()
+        threads.join()
     print("#"*20)
     print("Generate Excel")
     generate_excel(All_Interfaces)
     print("save JsonFile")
     json_dump(All_Interfaces)
     print("#"*20)
-
-    print(f"Switches_checked {len(switches_checked)}: {switches_checked}\n")
-    print(f"Switches CDP {len(switches)}: {switches}\n")
+    print(f"Switches checked {len(switches_checked)}: {switches_checked}\n")
 
     ### Timemessurement
     endtime = datetime.now()

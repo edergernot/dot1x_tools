@@ -13,6 +13,7 @@ interface GigabitEthernet 1/0/1
 ### ```uv run interface_report.py``` 
 + creates Excelfile and Json-File with usefull informations (speed, duplex, dot1x, vlan, ..) per interface
 * sheetname is date when its created.
+* When adding the filename of the device_file.csv which was done in Networkdump it can do multitasking. In just uses the IP-Adress out of the file
 
 ## Configure Ports from file where hostname and port is in a file
 ### ```uv run dot1x_from_file.py``` 

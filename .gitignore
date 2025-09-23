@@ -16,3 +16,4 @@ wheels/
 *.xlsx
 *.cfg
 jsondump.json
+*.csv
