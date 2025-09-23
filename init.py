@@ -1,10 +1,10 @@
 '''The Configs are defined here'''
 
 Vendor_to_change = "Dell Inc."
-seeddevice="172.30.103.254"
+seeddevice="192.168.253.253"
 
 # Check only these Platforms in CDP discovery
-platforms = ['cisco C9200', 'cisco C9300', 'cisco C9400', 'cisco 9500', 'cisco 9600']
+platforms = ['cisco C9200', 'cisco C9300', 'cisco C9400', 'cisco C9500', 'cisco C9600', 'cisco WS-C2960', 'cisco WS-3650', 'cisco WS-C3850' ]
 
 # Modify for your need 
 dot1x_config = ["switchport mode access",
