@@ -11,8 +11,8 @@ interface GigabitEthernet 1/0/1
 
 ## Generate an interface Report
 ### ```uv run interface_report.py``` 
-+ creates Excelfile with usefull informations (speed, duplex, dot1x, vlan, ..) per interface
-* sheetname is date when its created
++ creates Excelfile and Json-File with usefull informations (speed, duplex, dot1x, vlan, ..) per interface
+* sheetname is date when its created.
 
 ## Configure Ports from file where hostname and port is in a file
 ### ```uv run dot1x_from_file.py``` 

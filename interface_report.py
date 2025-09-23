@@ -200,8 +200,8 @@ def interface_report(IP):
     for interface in interface_status:
         interface_config_dict:dict={}
         interface_config_dict['host']=hostname
-        #if  interface['port'][:2]=='Ap' : # type: ignore # Ignore AP Ports
-        #    continue
+        if  interface['port'][:2]=='Ap' : # type: ignore # Ignore AP Ports
+            continue
         #if interface["name"]=='' and interface['vlan_id'] == '1':
         #    interface["Device"]=hostname
         #    Unconfigured_ports.append(interface)
@@ -217,7 +217,8 @@ def interface_report(IP):
             interface_config_dict[key]=generated_intconfig_dict[key]
         interface_config_dict["cdp"]=interface_cdp(ssh,interface)
         All_Interfaces.append(interface_config_dict)
-        print(f"Check {interface_config.split("\n")[1]}")
+        #print(f"Check {interface_config.split("\n")[1]}")
+    print(f"{len(interface_status)} interfaces checked")
     ssh.disconnect()
         
 if __name__ == "__main__":
@@ -230,6 +231,9 @@ if __name__ == "__main__":
     print("save JsonFile")
     json_dump(All_Interfaces)
     print("#"*20)
+
+    print(f"Switches_checked {len(switches_checked)}: {switches_checked}\n")
+    print(f"Switches CDP {len(switches)}: {switches}\n")
 
     ### Timemessurement
     endtime = datetime.now()
