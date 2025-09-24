@@ -91,7 +91,7 @@ def generate_interfaceconfig_dict(interface_config:str)->dict:
         if "access-session port-control auto" in line:
             interface["Dot1x"] = "Enabled"
             continue
-        if "authentication-session port-control auto" in line:
+        if "authentication port-control auto" in line:
             interface["Dot1x"] = "Enabled"
             continue
         if "mab" in line:
