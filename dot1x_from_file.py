@@ -149,7 +149,7 @@ def dot1x_work(IP,ports):
         
 
 if __name__ == "__main__":
-    ports=generate_dict_from_file("Ibiden-Switches.txt")
+    ports=generate_dict_from_file("portfile.txt")
     dot1x_work(seeddevice,ports)
     for switch in switches:
         dot1x_work(switch,ports)

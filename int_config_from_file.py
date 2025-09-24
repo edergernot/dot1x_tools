@@ -1,4 +1,4 @@
-'''Used for changing Interface configuration every Interface in a File (taken from Interface_cfg.xml column a and b)  also add device-file possible (no Multitasking)'''
+'''Used for changing Interface configuration on every Interface in a File (taken from Interface_cfg.xml column a and b)  also add device-file possible (no Multitasking)'''
 
 
 from dotenv import load_dotenv
@@ -14,6 +14,17 @@ import sys
 
 urllib3.disable_warnings() ### Disable Warning if SSL-Decryption is enabled
 
+# Interface Config
+int_config = ["switchport trunk native vlan 55",
+             "spanning-tree portfast trunk",
+             "switchport mode trunk",
+             "no switchport access vlan 55",
+             "no switchport port-security",
+             "no switchport port-security max 3",
+             "no switchport port-security aging time 30",
+             "speed auto",
+             "duplex auto"]
+
 ### Init Vars 
 starttime = datetime.now()
 switches = []
@@ -27,18 +38,6 @@ console=Console()  # used for colored Output
 load_dotenv()
 SSH_User=os.getenv("SSH_USERNAME")
 SSH_Pass=os.getenv("SSH_PASSWORD")
-MAC_API_KEY=os.getenv("MAC-API-KEY")
-
-# Interface Config
-int_config = ["switchport trunk native vlan 55",
-             "spanning-tree portfast trunk",
-             "switchport mode trunk",
-             "no switchport access vlan 55",
-             "no switchport port-security",
-             "no switchport port-security max 3",
-             "no switchport port-security aging time 30",
-             "speed auto",
-             "duplex auto"]
 
 def create_devicelist(file):
     devices = []
@@ -116,7 +115,7 @@ def change_config(IP,ports):
         change_interface(ssh,interface)
         
 if __name__ == "__main__":
-    ports=generate_dict_from_file("aps-file.txt")
+    ports=generate_dict_from_file("portfile.txt")
     print(ports)
     if len(sys.argv) == 1: # no device-file was added. Crawl from seedswitch
         change_config(seeddevice,ports)
