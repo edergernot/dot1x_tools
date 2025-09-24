@@ -17,3 +17,5 @@ wheels/
 *.cfg
 jsondump.json
 *.csv
+*.txt
+*.zip
