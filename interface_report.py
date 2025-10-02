@@ -153,7 +153,7 @@ def generate_excel(interfaces:list):
 
     # Write the dataframe data to XlsxWriter. Turn off the default header and
     # index and skip one row to allow us to insert a user defined header.
-    sheetname= starttime.strftime("%d.%m.%Y")
+    sheetname= starttime.strftime("%d.%m.%Y %H%M")
     df.to_excel(writer, sheet_name=sheetname, startrow=1, header=False, index=False)
 
     # Get the xlsxwriter workbook and worksheet objects.
@@ -229,7 +229,11 @@ def interface_report(IP):
         #    Unconfigured_ports.append(interface)
         interface_config_command : str =f'show run interface {interface['port']}' # type: ignore
         interface_config_dict["interface"]=interface['port'] # type: ignore
-        interface_config=ssh.send_command(interface_config_command).split("!")[1] # type: ignore
+        try:
+            interface_config=ssh.send_command(interface_config_command).split("!")[1] # type: ignore
+        except IndexError:
+            print(f"Error when executing command: {interface_config_command}")
+            interface_config=""
         generated_intconfig_dict:dict=generate_interfaceconfig_dict(interface_config)
         generated_intconfig_dict['macaddress_count']=count_mac_address(interface,ssh)
         current_status : dict =check_link(interface, ssh) # type: ignore
