@@ -108,6 +108,8 @@ def generate_interfaceconfig_dict(interface_config:str)->dict:
             continue
         if "duplex" in line:
             interface["duplex"]=line.split("duplex")[1].strip()
+        if "device-tracking attach-policy" in line:
+            interface["device_tracking_policy"]=line.split("device-tracking attach-policy")[1].strip
         if "channel-group" in line:
             interface["portchannel"]=line.split("channel-group")[1].strip()
         if "switchport trunk allowed vlan" in line:
