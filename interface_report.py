@@ -145,6 +145,25 @@ def check_link(interface,ssh):
         return {"current_status":speed[0]['status'], "current_speed":speed[0]['speed'], "current_duplex":speed[0]["duplex"]}
     return
 
+def check_poe(interface,ssh) :
+    poe={}
+    try:
+        power = ssh.send_command(f"show power inline {interface['port']}", use_textfsm=True)
+    except Exception as e:
+        #print(f"Error while sending PoE Command: {e}")
+        return(poe)
+    try:
+        poe['PoE_Admin_Status']=power[0]['admin_status']
+        poe['PoE_Oper_Status']=power[0]['operational_status']
+        poe['PoE_Power']=power[0]['power']
+        poe['PoE_Device']=power[0]['device']
+        poe['PoE_class']=power[0]['class']
+        poe['PoE_Max']=power[0]['max']
+    except Exception as e:
+        print(f"Error during converting PoE Dicts: {e}")
+        return(poe)
+    return(poe)
+
 def generate_excel(interfaces:list):
     try:
         os.remove("interface_cfg.xlsx")
@@ -243,6 +262,9 @@ def interface_report(IP):
             interface_config_dict[key]= current_status[key]
         for key in generated_intconfig_dict.keys():  
             interface_config_dict[key]=generated_intconfig_dict[key]
+        current_poe : dict = check_poe(interface,ssh) 
+        for key in current_poe.keys():
+            interface_config_dict[key]=current_poe[key]
         interface_config_dict["cdp"]=interface_cdp(ssh,interface)
         All_Interfaces.append(interface_config_dict)
         #print(f"Check {interface_config.split("\n")[1]}")
