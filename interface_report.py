@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import os
 from netmiko import ConnectHandler
+from netmiko import exceptions
 from datetime import datetime
 from rich.console import Console
 import pandas as pd
@@ -216,11 +217,18 @@ def interface_report(IP):
     device ={'device_type':'cisco_ios',
              'host':IP,
              'username':SSH_User,
-             'password':SSH_Pass}
+             'password':SSH_Pass,
+             'secret':SSH_Pass}
     print('#'*40)
     print (f"Try to connect to device {IP}")
     try:  # Try to do a SSH - Session
         ssh = ConnectHandler(**device)
+        ssh.enable()
+    except exceptions.NetmikoTimeoutException:
+        device['device_type']='cisco_ios_telnet'
+        ssh = ConnectHandler(**device)
+        ssh.enable()
+        print("Connected via Telnet")
     except Exception as e:
         console.print (f"SSH did not work for Device: {IP}", style="red")
         print(e)

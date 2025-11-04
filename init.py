@@ -1,7 +1,7 @@
 '''The Configs are defined here'''
 
 Vendor_to_change = "Dell Inc."
-seeddevice="192.168.253.253"
+seeddevice="10.0.11.11"
 
 # Check only these Platforms in CDP discovery
 platforms = ['cisco C9200', 'cisco C9300', 'cisco C9400', 'cisco C9500', 'cisco C9600', 'cisco WS-C2960', 'cisco WS-3650', 'cisco WS-C3850' ]
