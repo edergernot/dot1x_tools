@@ -226,9 +226,12 @@ def interface_report(IP):
         ssh.enable()
     except exceptions.NetmikoTimeoutException:
         device['device_type']='cisco_ios_telnet'
-        ssh = ConnectHandler(**device)
-        ssh.enable()
-        print("Connected via Telnet")
+        try:
+            ssh = ConnectHandler(**device)
+            ssh.enable()
+            print("Connected via Telnet")
+        except Exception as e:
+            return
     except Exception as e:
         console.print (f"SSH did not work for Device: {IP}", style="red")
         print(e)
