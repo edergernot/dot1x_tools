@@ -261,6 +261,7 @@ def interface_report(IP):
         #    Unconfigured_ports.append(interface)
         interface_config_command : str =f'show run interface {interface['port']}' # type: ignore
         interface_config_dict["interface"]=interface['port'] # type: ignore
+        interface_config_dict["Current_Vlan"]=interface['vlan_id']
         try:
             interface_config=ssh.send_command(interface_config_command).split("!")[1] # type: ignore
         except IndexError:
